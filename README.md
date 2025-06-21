@@ -1,5 +1,7 @@
+  <img width="128" src="https://github.com/user-attachments/assets/4e1f87c0-af56-4854-ae49-ee93bb8492c3">
+
 # OnlyBlends.Gamepad
-## Description
+ Description
 A Blender Extension to integrate gamepads into blender
 ## Features
 intended for use with geometry nodes
