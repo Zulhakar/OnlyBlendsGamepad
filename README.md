@@ -15,5 +15,7 @@ Download as zip and install in Blender via:
 ## Usage
 
 In preference Tab toggle Gamepad listener and get state informations
+![Bildschirmfoto vom 2025-06-21 18-53-56](https://github.com/user-attachments/assets/bbb71991-52eb-4f1f-aa7b-b1d715a4566b)
 
 use automatic generated Geometry nodes
+![Bildschirmfoto vom 2025-06-21 18-59-07](https://github.com/user-attachments/assets/a18616da-4b4f-40f9-a599-ae5d48eec101)
