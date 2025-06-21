@@ -1,6 +1,6 @@
   <img width="128" src="https://github.com/user-attachments/assets/4e1f87c0-af56-4854-ae49-ee93bb8492c3">
 
-# OnlyBlends.Gamepad
+# OnlyBlends.Gamepad v0.1.0
  Description
 A Blender Extension to integrate gamepads into blender
 ## Features
@@ -21,3 +21,12 @@ In preference Tab toggle Gamepad listener and get state informations
 
 use automatic generated Geometry nodes
 ![Bildschirmfoto vom 2025-06-21 18-59-07](https://github.com/user-attachments/assets/a18616da-4b4f-40f9-a599-ae5d48eec101)
+
+## Tests
+
+Tested on:
+
+- [x] Linux
+    -  [x] Ubuntu 24.04 LTS
+- [x] Window
+- [ ] Mac OS X
