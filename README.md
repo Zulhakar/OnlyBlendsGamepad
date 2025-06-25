@@ -1,18 +1,20 @@
   <img width="128" src="https://github.com/user-attachments/assets/4e1f87c0-af56-4854-ae49-ee93bb8492c3">
 
 # OnlyBlends.Gamepad v0.1.0
- Description
-A Blender Extension to integrate gamepads into blender
+A Blender Extension to integrate gamepads in realtime into blender. 
+
 ## Features
-intended for use with geometry nodes
-adjustable update interval
-toggle to enable/disable gamepad listener
-supports multiple gamepads and multiple platforms (pygame link)
+- Intended for use with geometry nodes
+- Adjustable update interval 
+- Supports multiple gamepads and multiple platforms (pygame link)
+- Dropdown menus for each individual gamepad
+- Nodes segmented into: *D-Pad* ; *Axis* (Sticks and Bumpers) ; *Buttons*
+- Integrated geometry nodes gamepad example for visual testing of mapping
 
 ## Install
 Download as zip and install in Blender via:
 
-    Edit > Preference > Get Extensions > (dropdown on the top right) > Install from Disk
+    Edit > Preference > Get Extensions > (dropdown on the top, far right) > Install from Disk
 
 ## Usage
 
@@ -28,5 +30,10 @@ Tested on:
 
 - [x] Linux
     -  [x] Ubuntu 24.04 LTS
-- [x] Window
+- [x] Windows 10 22h2
 - [ ] Mac OS X
+
+## Special Thanks
+
+[J-Lthr](https://github.com/j-lthr) and [Erindale](https://github.com/Erindale) for their [inspiration](https://www.youtube.com/watch?v=v1Q4SWGgKM0&t=350s) with their [XInput integration](https://github.com/Erindale/XinputReader)!
+Also my nephew (he has writen this description :)  
