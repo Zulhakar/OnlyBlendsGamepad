@@ -33,6 +33,10 @@ Tested on:
 - [x] Windows 10 22h2
 - [ ] Mac OS X
 
+## Upcoming features
+
+- Optional linkage to camera for drone esque intuitive movement: TBD
+
 ## Special Thanks
 
 [J-Lthr](https://github.com/j-lthr) and [Erindale](https://github.com/Erindale) for their [inspiration](https://www.youtube.com/watch?v=v1Q4SWGgKM0&t=350s) with their [XInput integration](https://github.com/Erindale/XinputReader)!
