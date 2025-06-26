@@ -39,5 +39,5 @@ Tested on:
 
 ## Special Thanks
 
-[Erindale](https://github.com/Erindale) [inspiration](https://www.youtube.com/watch?v=v1Q4SWGgKM0&t=350s) [XInput integration](https://github.com/Erindale/XinputReader)!
+[Erindale](https://github.com/Erindale) 
 Also my nephew (he has writen this description :)  
