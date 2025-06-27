@@ -1,8 +1,8 @@
 import bpy
-from .constants import *
+from .constants import GAMEPAD_LABEL
 
-def create_gamepad_nodegroup(input_type, controller_id):
-    obj_name = GAMEPAD_LABEL + str(controller_id)
+
+def create_gamepad_nodegroup(input_type, obj_name):
     gamepad_reader_empty = bpy.data.objects.get(obj_name)
     node_group_name = obj_name + "_" + input_type
     controller_inputs = gamepad_reader_empty.items()
@@ -31,7 +31,8 @@ def create_gamepad_nodegroup(input_type, controller_id):
                         gamepad_nodegroup.outputs.new("NodeSocketFloat", inputs[0])
                 if bpy.app.version[0] == 4:
                     if inputs[0] not in gamepad_nodegroup.interface.items_tree:
-                        gamepad_nodegroup.interface.new_socket(inputs[0], in_out="OUTPUT", socket_type='NodeSocketFloat')
+                        gamepad_nodegroup.interface.new_socket(inputs[0], in_out="OUTPUT",
+                                                               socket_type='NodeSocketFloat')
 
                 output_socket = output_node.inputs[inputs[0]]
                 fcurve = output_socket.driver_add('default_value')
@@ -50,7 +51,8 @@ def create_gamepad_nodegroup(input_type, controller_id):
                 driver.expression = 'var'
 
 
-def create_nodegroup(controller_id=0):
-    input_types = ("button", "hat", "axis")
+def create_nodegroup(obj_name):
+    input_types = ("button", "dpad", "axis")
     for input_type in input_types:
-        create_gamepad_nodegroup(input_type, controller_id)
+        create_gamepad_nodegroup(input_type, obj_name)
+

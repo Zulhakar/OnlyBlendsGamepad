@@ -1,12 +1,12 @@
 import bpy
-from bpy.types import Operator, PropertyGroup
 from bpy.props import BoolProperty, FloatProperty, IntProperty
 
 from .pygame_helper import gamepad_listen_function
-from .ui import GAMEPAD_PT_main_panel, GAMEPAD_PT_sub
+from .ui import GAMEPAD_PT_main_panel, GAMEPAD_PT_sub, CREATE_OT_model, CREATE_OT_nodegroup
+from .gamepad_model import create_gamepad_geometrynode
+from .nodegroup import create_nodegroup
 
-
-class GamepadLoopProperties(PropertyGroup):
+class GamepadLoopProperties(bpy.types.PropertyGroup):
     """Property group for gamepad loop settings"""
 
     enable_debug_popup: BoolProperty(
@@ -29,6 +29,8 @@ class GamepadLoopProperties(PropertyGroup):
         update=lambda self, context: update_gamepad_loop(self, context)
     )  # type: ignore
 
+
+
     loop_interval: FloatProperty(
         name="Interval (seconds)",
         description="Time interval between loop iterations",
@@ -49,6 +51,12 @@ class GamepadLoopProperties(PropertyGroup):
         default=0
     )  # type: ignore
 
+class DetectedGamepadsProp(bpy.types.PropertyGroup):
+    id: bpy.props.IntProperty(name="Id Property", default=0)
+    pygame_id: bpy.props.IntProperty(name="Pygame Id Property", default=0)
+    name: bpy.props.StringProperty(name="Gamepad Name", default="Unknown")
+    type_name: bpy.props.StringProperty(name="Type Name", default="Unknown")
+    panel_class_name: bpy.props.StringProperty(name="Panel Name", default="Unknown")
 
 def update_gamepad_loop(self, context):
     """Called when the checkbox value changes"""
@@ -89,8 +97,9 @@ def gamepad_loop_iteration():
 
 classes = [
     GamepadLoopProperties,
+    DetectedGamepadsProp,
     GAMEPAD_PT_main_panel,
-    GAMEPAD_PT_sub
+    GAMEPAD_PT_sub, CREATE_OT_model, CREATE_OT_nodegroup
 ]
 
 
@@ -98,6 +107,8 @@ def register():
     for cls in classes:
         bpy.utils.register_class(cls)
     bpy.types.Scene.gamepad_loop_props = bpy.props.PointerProperty(type=GamepadLoopProperties)
+    bpy.types.Scene.detected_gamepads = bpy.props.CollectionProperty(type=DetectedGamepadsProp)
+
     bpy.app.timers.register(gamepad_loop_iteration, first_interval=0.1)
 
 
