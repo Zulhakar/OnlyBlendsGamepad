@@ -19,6 +19,7 @@ def popup_info_log(text, joy_name):
     if bpy.context.scene.gamepad_loop_props.enable_debug_popup:
         def oops(self, context):
             self.layout.label(text=text)
+            
 
         bpy.context.window_manager.popup_menu(oops, title=joy_name, icon='EVENT_MEDIASTOP')
 
@@ -165,6 +166,18 @@ def gamepad_listen_function():
             empty = bpy.data.objects.get(name)
             empty["axis_" + str(axis)] = axis_value
 
+    for i in range(pygame.joystick.get_count()):
+        joystick = pygame.joystick.Joystick(i)
+        if not hasattr(joystick, "initialized"):
+            joystick.init()
+        name = GAMEPAD_LABEL + str(i)
+        empty = bpy.data.objects.get(name)
+        if empty is not None:
+            empty.location = empty.location
+        name = GAMEPAD_LABEL + str(joystick.get_instance_id())
+        empty = bpy.data.objects.get(name)
+        if empty is not None:
+            empty.location = empty.location
 
 
 def get_joystick_state(joystick, gamepad_reader_empty, id):
