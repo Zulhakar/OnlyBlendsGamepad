@@ -76,18 +76,11 @@ def gamepad_listen_function():
                     break
                 i += 1
 
-            gamepad_count = bpy.context.scene.gamepad_loop_props.gamepad_count
-            #class_name = "GAMEPAD_PT_advanced_panel_" + str(event.instance_id)
             class_name = gamepad_to_delete.panel_class_name
             bpy.utils.unregister_class(register_classes_dyn[class_name])
             del register_classes_dyn[class_name]
-            print("del", gamepad_to_delete.name, class_name, gamepad_to_delete.type_name, str(gamepad_to_delete.id), str(gamepad_to_delete.pygame_id))
             bpy.data.objects.remove(bpy.data.objects.get(gamepad_to_delete.name))
             bpy.context.scene.detected_gamepads.remove(gamepad_to_delete_id)
-            #del gamepad_to_delete
-            for item in bpy.context.scene.detected_gamepads:
-                print(item.name, item.panel_class_name, item.type_name, str(item.id), str(item.pygame_id))
-
             bpy.context.scene.gamepad_loop_props.gamepad_count = pygame.joystick.get_count()
 
         if event.type == pygame.JOYBUTTONDOWN:
@@ -95,15 +88,19 @@ def gamepad_listen_function():
             name = GAMEPAD_LABEL + str(id)
             empty = bpy.data.objects.get(name)
             empty["button_" + str(event.button)] = 1
-            joy = pygame.joystick.Joystick(id)
-            joy_name = joy.get_name()
+            try:
+                joy = pygame.joystick.Joystick(event.__dict__["joy"])
+                joy_name = joy.get_name()
 
-            message = f"Joystick {str(joy.get_instance_id())}: Button {str(event.button)} pressed"
+                message = f"Joystick {str(joy.get_instance_id())}: Button {str(event.button)} pressed"
 
-            console_log(joy_name)
-            console_log(message)
+                console_log(joy_name)
+                console_log(message)
 
-            popup_info_log(message, joy_name)
+                popup_info_log(message, joy_name)
+            except Exception as e:
+                print(e)
+                print("")
 
             if bpy.context.scene.gamepad_loop_props.enable_debug_popup:
                 def oops(self, context):
@@ -116,35 +113,37 @@ def gamepad_listen_function():
             name = GAMEPAD_LABEL + str(id)
             empty = bpy.data.objects.get(name)
             empty["button_" + str(event.button)] = 0
-            joy = pygame.joystick.Joystick(id)
-            joy_name = joy.get_name()
+            try:
+                joy = pygame.joystick.Joystick(event.__dict__["joy"])
+                joy_name = joy.get_name()
 
-            message = f"Joystick {str(joy.get_instance_id())}: Button {str(event.button)} released"
+                message = f"Joystick {str(joy.get_instance_id())}: Button {str(event.button)} released"
 
-            console_log(joy_name)
-            console_log(message)
+                console_log(joy_name)
+                console_log(message)
 
-            popup_info_log(message, joy_name)
-
-            if bpy.context.scene.gamepad_loop_props.enable_debug_popup:
-                def oops(self, context):
-                    self.layout.label(text="Joystick button released. " + str(event.button))
-
-                bpy.context.window_manager.popup_menu(oops, title=joy_name + " Button Released", icon='EVENT_MEDIASTOP')
+                popup_info_log(message, joy_name)
+            except Exception as e:
+                print(e)
+                print("")
 
         if event.type == pygame.JOYHATMOTION:
             id = event.instance_id
             hat_value = event.__dict__["value"]
             hat = event.__dict__["hat"]
             name = GAMEPAD_LABEL + str(id)
-            joy = pygame.joystick.Joystick(id)
-            joy_name = joy.get_name()
-            message = f"D_Pad_: {str(hat)} value: {str(hat_value)}"
-            console_log(message)
-            popup_info_log(message, joy_name)
-            empty = bpy.data.objects.get(name)
-            empty["dpad_x_" + str(hat)] = hat_value[0]
-            empty["dpad_y_" + str(hat)] = hat_value[1]
+            try:
+                joy = pygame.joystick.Joystick(event.__dict__["joy"])
+                joy_name = joy.get_name()
+                message = f"D_Pad_: {str(hat)} value: {str(hat_value)}"
+                console_log(message)
+                popup_info_log(message, joy_name)
+                empty = bpy.data.objects.get(name)
+                empty["dpad_x_" + str(hat)] = hat_value[0]
+                empty["dpad_y_" + str(hat)] = hat_value[1]
+            except Exception as e:
+                print(e)
+                print("")
 
         if event.type == pygame.JOYAXISMOTION:
             id = event.instance_id
