@@ -42,8 +42,7 @@ def gamepad_listen_function():
             #create_nodegroup(gamepad_count)
             name = GAMEPAD_LABEL + str(joy_id)
             class_name =  PANEL_CLASS + str(joy_id)
-            empty = create_gamepad_empty(name)
-            get_joystick_state(joy, empty, joy_id)
+
             dynamic_panel_class = create_dynamic_controller_panel(class_name, name)
             bpy.utils.register_class(dynamic_panel_class)
             new_gamepad_prop = bpy.context.scene.detected_gamepads.add()
@@ -53,8 +52,10 @@ def gamepad_listen_function():
             new_gamepad_prop.panel_class_name = class_name
             new_gamepad_prop.type_name = joy.get_name()
             bpy.context.scene.gamepad_loop_props.gamepad_count = pygame.joystick.get_count()
-
             register_classes_dyn[class_name] = dynamic_panel_class
+            empty = create_gamepad_empty(name)
+            get_joystick_state(joy, empty, joy_id)
+
 
         if event.type == pygame.JOYDEVICEREMOVED:
             # del joysticks[event.instance_id]
@@ -77,8 +78,13 @@ def gamepad_listen_function():
                 i += 1
 
             class_name = gamepad_to_delete.panel_class_name
-            bpy.utils.unregister_class(register_classes_dyn[class_name])
-            del register_classes_dyn[class_name]
+            try:
+                bpy.utils.unregister_class(register_classes_dyn[class_name])
+                del register_classes_dyn[class_name]
+            except Exception as e:
+                print(e)
+                print("")
+
             bpy.data.objects.remove(bpy.data.objects.get(gamepad_to_delete.name))
             bpy.context.scene.detected_gamepads.remove(gamepad_to_delete_id)
             bpy.context.scene.gamepad_loop_props.gamepad_count = pygame.joystick.get_count()
@@ -159,14 +165,6 @@ def gamepad_listen_function():
             empty = bpy.data.objects.get(name)
             empty["axis_" + str(axis)] = axis_value
 
-    for i in range(pygame.joystick.get_count()):
-        joystick = pygame.joystick.Joystick(i)
-        if not hasattr(joystick, "initialized"):
-            joystick.init()
-        name = GAMEPAD_LABEL + str(i)
-        empty = bpy.data.objects.get(name)
-        if empty is not None:
-            empty.location = empty.location
 
 
 def get_joystick_state(joystick, gamepad_reader_empty, id):
