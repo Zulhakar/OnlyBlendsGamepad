@@ -42,7 +42,3 @@ Tested on:
 
 - Optional linkage to camera for drone esque intuitive movement: TBD
 
-## Special Thanks
-
-[Erindale](https://github.com/Erindale) 
-Also my nephew (he has writen this description :)  
