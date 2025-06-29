@@ -1,10 +1,9 @@
 import bpy
 from bpy.props import BoolProperty, FloatProperty, IntProperty
 
-from .pygame_helper import gamepad_listen_function
-from .ui import GAMEPAD_PT_main_panel, GAMEPAD_PT_sub, CREATE_OT_model, CREATE_OT_nodegroup
-from .gamepad_model import create_gamepad_geometrynode
-from .nodegroup import create_nodegroup
+from .pygame_helper import gamepad_listen_function, all_dynamic_panel_classes
+from .ui import GAMEPAD_PT_main_panel, GAMEPAD_PT_sub
+
 
 class GamepadLoopProperties(bpy.types.PropertyGroup):
     """Property group for gamepad loop settings"""
@@ -21,15 +20,12 @@ class GamepadLoopProperties(bpy.types.PropertyGroup):
         default=True
     )  # type: ignore
 
-
     enable_gamepad_loop: BoolProperty(
         name="Enable Gamepad Loop",
         description="Toggle gamepad loop functionality on/off",
         default=True,
         update=lambda self, context: update_gamepad_loop(self, context)
     )  # type: ignore
-
-
 
     loop_interval: FloatProperty(
         name="Interval (seconds)",
@@ -51,12 +47,22 @@ class GamepadLoopProperties(bpy.types.PropertyGroup):
         default=0
     )  # type: ignore
 
+
 class DetectedGamepadsProp(bpy.types.PropertyGroup):
     id: bpy.props.IntProperty(name="Id Property", default=0)
     pygame_id: bpy.props.IntProperty(name="Pygame Id Property", default=0)
     name: bpy.props.StringProperty(name="Gamepad Name", default="Unknown")
     type_name: bpy.props.StringProperty(name="Type Name", default="Unknown")
     panel_class_name: bpy.props.StringProperty(name="Panel Name", default="Unknown")
+
+
+classes = [
+    GamepadLoopProperties,
+    DetectedGamepadsProp,
+    GAMEPAD_PT_main_panel,
+    GAMEPAD_PT_sub
+]
+
 
 def update_gamepad_loop(self, context):
     """Called when the checkbox value changes"""
@@ -91,16 +97,7 @@ def gamepad_loop_iteration():
         if area.type in ['VIEW_3D', 'PROPERTIES']:
             area.tag_redraw()
 
-
     return gamepad_loop_props.loop_interval
-
-
-classes = [
-    GamepadLoopProperties,
-    DetectedGamepadsProp,
-    GAMEPAD_PT_main_panel,
-    GAMEPAD_PT_sub, CREATE_OT_model, CREATE_OT_nodegroup
-]
 
 
 def register():
@@ -108,7 +105,6 @@ def register():
         bpy.utils.register_class(cls)
     bpy.types.Scene.gamepad_loop_props = bpy.props.PointerProperty(type=GamepadLoopProperties)
     bpy.types.Scene.detected_gamepads = bpy.props.CollectionProperty(type=DetectedGamepadsProp)
-
     bpy.app.timers.register(gamepad_loop_iteration, first_interval=0.1)
 
 
@@ -117,8 +113,23 @@ def unregister():
         bpy.app.timers.unregister(gamepad_loop_iteration)
     for cls in reversed(classes):
         bpy.utils.unregister_class(cls)
-    if hasattr(bpy.types.Scene, 'gamepad_loop_props'):
-        del bpy.types.Scene.gamepad_loop_props
+    try:
+        if hasattr(bpy.types.Scene, 'gamepad_loop_props'):
+            del bpy.types.Scene.gamepad_loop_props
+    except Exception as e:
+        print(e)
+    try:
+        if hasattr(bpy.types.Scene, 'detected_gamepads'):
+            del bpy.types.Scene.detected_gamepads
+    except Exception as e:
+        print(e)
+    dyn_classes = all_dynamic_panel_classes()
+    for cls in dyn_classes:
+        try:
+            bpy.utils.unregister_class(cls)
+        except Exception as e:
+            print(e)
+            print(cls, "Not registered")
 
 
 if __name__ == "__main__":
