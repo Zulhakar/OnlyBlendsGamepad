@@ -2,7 +2,7 @@ import bpy
 from bpy.props import BoolProperty, FloatProperty, IntProperty
 
 from .pygame_helper import gamepad_listen_function, all_dynamic_panel_classes
-from .ui import GAMEPAD_PT_main_panel, GAMEPAD_PT_sub
+from .ui import GAMEPAD_PT_main_panel, GAMEPAD_PT_sub, CREATE_OT_model, CREATE_OT_nodegroup
 
 
 class GamepadLoopProperties(bpy.types.PropertyGroup):
@@ -60,7 +60,9 @@ classes = [
     GamepadLoopProperties,
     DetectedGamepadsProp,
     GAMEPAD_PT_main_panel,
-    GAMEPAD_PT_sub
+    GAMEPAD_PT_sub,
+    CREATE_OT_model,
+    CREATE_OT_nodegroup
 ]
 
 
