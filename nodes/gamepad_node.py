@@ -155,3 +155,6 @@ class GamepadStateNode(ConstantNodeCnt):
     def free(self):
         super().free()
         self.clean_up()
+
+    def refresh(self):
+        self.gamepads_update()

@@ -1,4 +1,5 @@
 import bpy
+from bpy.app.handlers import persistent
 from bl_ui import node_add_menu
 
 from .cnt.node_editor import register as register_node_editor
@@ -12,6 +13,13 @@ from .nodes import register as register_obg_nodes
 from .nodes import unregister as unregister_obg_nodes
 from .config import OB_TREE_TYPE
 
+
+@persistent
+def load_blend_file_job(file_name):
+    for group in bpy.data.node_groups:
+        for node in group.nodes:
+            if hasattr(node, "refresh"):
+                node.refresh()
 
 class RealtimeMenu(bpy.types.Menu):
     bl_label = 'Realtime'
@@ -56,18 +64,23 @@ def register():
     bpy.utils.register_class(RealtimeMenu)
     bpy.utils.register_class(UtilMenu)
     bpy.types.NODE_MT_add.append(draw_add_menu)
+    bpy.app.handlers.load_post.append(load_blend_file_job)
 
 
 def unregister_util():
     from .globals import gamepad_thread_dict, gamepad_event_queue_dict, register_functions_dict
-    for key, value in register_functions_dict.items():
-        if bpy.app.timers.is_registered(value):
-            bpy.app.timers.unregister(value)
+    import copy
+    keys = list(register_functions_dict.keys())
+    for key in keys:
+        if bpy.app.timers.is_registered(register_functions_dict[key]):
+            bpy.app.timers.unregister(register_functions_dict[key])
         del register_functions_dict[key]
-    for key, value in gamepad_event_queue_dict.items():
+    keys = list(gamepad_event_queue_dict.keys())
+    for key in keys:
         del gamepad_event_queue_dict[key]
-    for key, value in gamepad_thread_dict.items():
-        value.let_it_run = False
+    keys = list(gamepad_thread_dict.keys())
+    for key in keys:
+        gamepad_thread_dict[key].let_it_run = False
         del gamepad_thread_dict[key]
 
 
@@ -79,6 +92,7 @@ def unregister():
     unregister_node_editor()
     bpy.utils.unregister_class(RealtimeMenu)
     bpy.utils.unregister_class(UtilMenu)
+    bpy.app.handlers.load_post.remove(load_blend_file_job)
     unregister_util()
 
 if __name__ == "__main__":
