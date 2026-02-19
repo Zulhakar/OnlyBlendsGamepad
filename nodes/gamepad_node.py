@@ -12,7 +12,7 @@ UPDATE_INTERVAL = 0.001
 
 def get_gamepad_device_path_enum_items(scene, context):
     from inputs import devices
-    items = []
+    items = [(None)]
     for i, device in enumerate(devices.gamepads):
         items.append((device._device_path, device.name, device.name))
     return items
@@ -147,6 +147,7 @@ class GamepadStateNode(ConstantNodeCnt):
         self.outputs.new('NodeSocketFloatCnt', "Axis Value")
         super().init(context)
 
+
     def socket_update(self, socket):
         if socket.is_output:
             for link in socket.links:
@@ -157,4 +158,6 @@ class GamepadStateNode(ConstantNodeCnt):
         self.clean_up(self.gamepad_device_path)
 
     def refresh(self):
-        self.gamepads_update()
+        print(self.gamepad_device_path)
+        if self.gamepad_device_path:
+            self.gamepads_update()
