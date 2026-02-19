@@ -1,137 +1,67 @@
 import bpy
-from bpy.props import BoolProperty, FloatProperty, IntProperty
+from bl_ui import node_add_menu
 
-from .pygame_helper import gamepad_listen_function, all_dynamic_panel_classes
-from .ui import GAMEPAD_PT_main_panel, GAMEPAD_PT_sub, CREATE_OT_model, CREATE_OT_nodegroup
-
-
-class GamepadLoopProperties(bpy.types.PropertyGroup):
-    """Property group for gamepad loop settings"""
-
-    enable_debug_popup: BoolProperty(
-        name="Enable Debug Popup Infos",
-        description="Toggle to show Popup which displays Button Inputs",
-        default=False
-    )  # type: ignore
-
-    enable_debug_console: BoolProperty(
-        name="Enable Debug Console Infos",
-        description="Toggle to output terminal infos",
-        default=True
-    )  # type: ignore
-
-    enable_gamepad_loop: BoolProperty(
-        name="Enable Gamepad Loop",
-        description="Toggle gamepad loop functionality on/off",
-        default=True,
-        update=lambda self, context: update_gamepad_loop(self, context)
-    )  # type: ignore
-
-    loop_interval: FloatProperty(
-        name="Interval (seconds)",
-        description="Time interval between loop iterations",
-        default=0.1,
-        min=0.01,
-        max=10.0,
-        step=0.01
-    )  # type: ignore
-
-    gamepad_count: IntProperty(
-        name="Gamepad Count",
-        description=" Number of detected Gamepads",
-        default=0
-    )  # type: ignore
-    iteration_count: IntProperty(
-        name="Iterations",
-        description="Number of iterations completed",
-        default=0
-    )  # type: ignore
+from .cnt.node_editor import register as register_node_editor
+from .cnt.node_editor import unregister as unregister_node_editor
+from .cnt.sockets.basic_sockets import register as register_basic_sockets
+from .cnt.sockets.basic_sockets import unregister as unregister_basic_sockets
+from .cnt.nodes import register as register_nodes
+from .cnt.nodes import unregister as unregister_nodes
+from .cnt.node_editor.menus import InputMenu, GroupMenu
+from .nodes import register as register_obg_nodes
+from .nodes import unregister as unregister_obg_nodes
+from .config import OB_TREE_TYPE
 
 
-class DetectedGamepadsProp(bpy.types.PropertyGroup):
-    id: bpy.props.IntProperty(name="Id Property", default=0)
-    pygame_id: bpy.props.IntProperty(name="Pygame Id Property", default=0)
-    name: bpy.props.StringProperty(name="Gamepad Name", default="Unknown")
-    type_name: bpy.props.StringProperty(name="Type Name", default="Unknown")
-    panel_class_name: bpy.props.StringProperty(name="Panel Name", default="Unknown")
+class RealtimeMenu(bpy.types.Menu):
+    bl_label = 'Realtime'
+    bl_idname = 'RealtimeMenu'
+    def draw(self, context):
+        layout = self.layout
+        node_add_menu.add_node_type(layout, "RealtimeValueNode")
+        node_add_menu.add_node_type(layout, "SceneInfoNodeCnt")
+        node_add_menu.add_node_type(layout, "GamepadStateNode")
+        node_add_menu.add_node_type(layout, "TransformObjectNodeCnt")
+        node_add_menu.add_node_type(layout, "DuplicateObjectNode")
+
+class UtilMenu(bpy.types.Menu):
+    bl_label = 'Util'
+    bl_idname = 'UtilMenu'
+    def draw(self, context):
+        layout = self.layout
+        node_add_menu.add_node_type(layout, "MathNodeCnt")
+        node_add_menu.add_node_type(layout, "SwitchNodeCnt")
+        node_add_menu.add_node_type(layout, "CompareAndBoolNodeCnt")
 
 
-classes = [
-    GamepadLoopProperties,
-    DetectedGamepadsProp,
-    GAMEPAD_PT_main_panel,
-    GAMEPAD_PT_sub,
-    CREATE_OT_model,
-    CREATE_OT_nodegroup
-]
-
-
-def update_gamepad_loop(self, context):
-    """Called when the checkbox value changes"""
-    if self.enable_gamepad_loop:
-        if not bpy.app.timers.is_registered(gamepad_loop_iteration):
-            self.iteration_count = 0  # Reset counter
-            bpy.app.timers.register(gamepad_loop_iteration, first_interval=self.loop_interval)
-    else:
-        if bpy.app.timers.is_registered(gamepad_loop_iteration):
-            bpy.app.timers.unregister(gamepad_loop_iteration)
-
-
-def gamepad_loop_iteration():
-    """
-    The main loop function that gets called repeatedly
-    Returns the interval for next call, or None to stop
-    """
-    scene = bpy.context.scene
-    gamepad_loop_props = scene.gamepad_loop_props
-
-    # Check if loop should continue
-    if not gamepad_loop_props.enable_gamepad_loop:
-        return None  # Stop
-
-    gamepad_loop_props.iteration_count += 1
-
-    # this runs on the main thread !!!
-    gamepad_listen_function()
-
-    # Force UI update
-    for area in bpy.context.screen.areas:
-        if area.type in ['VIEW_3D', 'PROPERTIES']:
-            area.tag_redraw()
-
-    return gamepad_loop_props.loop_interval
-
+def draw_add_menu(self, context):
+    layout = self.layout
+    if context.space_data.tree_type != OB_TREE_TYPE:
+        return
+    layout.menu(InputMenu.bl_idname)
+    layout.menu(GroupMenu.bl_idname)
+    layout.menu(RealtimeMenu.bl_idname)
+    layout.menu(UtilMenu.bl_idname)
+    node_add_menu.add_node_type(layout, "ModifierNode")
 
 def register():
-    for cls in classes:
-        bpy.utils.register_class(cls)
-    bpy.types.Scene.gamepad_loop_props = bpy.props.PointerProperty(type=GamepadLoopProperties)
-    bpy.types.Scene.detected_gamepads = bpy.props.CollectionProperty(type=DetectedGamepadsProp)
-    bpy.app.timers.register(gamepad_loop_iteration, first_interval=0.1)
+    register_basic_sockets()
+    register_nodes()
+    register_obg_nodes()
+    register_node_editor()
+    bpy.utils.register_class(RealtimeMenu)
+    bpy.utils.register_class(UtilMenu)
+    bpy.types.NODE_MT_add.append(draw_add_menu)
 
 
 def unregister():
-    if bpy.app.timers.is_registered(gamepad_loop_iteration):
-        bpy.app.timers.unregister(gamepad_loop_iteration)
-    for cls in reversed(classes):
-        bpy.utils.unregister_class(cls)
-    try:
-        if hasattr(bpy.types.Scene, 'gamepad_loop_props'):
-            del bpy.types.Scene.gamepad_loop_props
-    except Exception as e:
-        print(e)
-    try:
-        if hasattr(bpy.types.Scene, 'detected_gamepads'):
-            del bpy.types.Scene.detected_gamepads
-    except Exception as e:
-        print(e)
-    dyn_classes = all_dynamic_panel_classes()
-    for cls in dyn_classes:
-        try:
-            bpy.utils.unregister_class(cls)
-        except Exception as e:
-            print(e)
-            print(cls, "Not registered")
+    bpy.types.NODE_MT_add.remove(draw_add_menu)
+    unregister_basic_sockets()
+    unregister_obg_nodes()
+    unregister_nodes()
+    unregister_node_editor()
+    bpy.utils.unregister_class(RealtimeMenu)
+    bpy.utils.unregister_class(UtilMenu)
 
 
 if __name__ == "__main__":
