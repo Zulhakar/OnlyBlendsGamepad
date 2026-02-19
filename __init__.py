@@ -16,6 +16,7 @@ from .config import OB_TREE_TYPE
 class RealtimeMenu(bpy.types.Menu):
     bl_label = 'Realtime'
     bl_idname = 'RealtimeMenu'
+
     def draw(self, context):
         layout = self.layout
         node_add_menu.add_node_type(layout, "RealtimeValueNode")
@@ -24,9 +25,11 @@ class RealtimeMenu(bpy.types.Menu):
         node_add_menu.add_node_type(layout, "TransformObjectNodeCnt")
         node_add_menu.add_node_type(layout, "DuplicateObjectNode")
 
+
 class UtilMenu(bpy.types.Menu):
     bl_label = 'Util'
     bl_idname = 'UtilMenu'
+
     def draw(self, context):
         layout = self.layout
         node_add_menu.add_node_type(layout, "MathNodeCnt")
@@ -44,6 +47,7 @@ def draw_add_menu(self, context):
     layout.menu(UtilMenu.bl_idname)
     node_add_menu.add_node_type(layout, "ModifierNode")
 
+
 def register():
     register_basic_sockets()
     register_nodes()
@@ -54,6 +58,19 @@ def register():
     bpy.types.NODE_MT_add.append(draw_add_menu)
 
 
+def unregister_util():
+    from .globals import gamepad_thread_dict, gamepad_event_queue_dict, register_functions_dict
+    for key, value in register_functions_dict.items():
+        if bpy.app.timers.is_registered(value):
+            bpy.app.timers.unregister(value)
+        del register_functions_dict[key]
+    for key, value in gamepad_event_queue_dict.items():
+        del gamepad_event_queue_dict[key]
+    for key, value in gamepad_thread_dict.items():
+        value.let_it_run = False
+        del gamepad_thread_dict[key]
+
+
 def unregister():
     bpy.types.NODE_MT_add.remove(draw_add_menu)
     unregister_basic_sockets()
@@ -62,7 +79,7 @@ def unregister():
     unregister_node_editor()
     bpy.utils.unregister_class(RealtimeMenu)
     bpy.utils.unregister_class(UtilMenu)
-
+    unregister_util()
 
 if __name__ == "__main__":
     register()

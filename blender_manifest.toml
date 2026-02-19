@@ -3,11 +3,11 @@ schema_version = "1.0.0"
 id = "only_blends_gamepad"
 version = "0.5.0"
 name = "OnlyBlends.Gamepad"
-tagline = "Integrate Controller like Gamepads, Keyboards and Mouse inputs via Custom Nodes"
+tagline = "Integrate Controller like Gamepads and other inputs via Nodes"
 maintainer = "Zulhakar (ChangeGamer) <Ilineiros@proton.me>"
 type = "add-on"
 website = "https://github.com/Zulhakar/OnlyBlendsGamepad"
-tags = ["Game Engine", "Nodes"]
+tags = ["Game Engine", "Node"]
 blender_version_min = "4.2.0"
 license = [
     "SPDX:GPL-3.0-or-later",

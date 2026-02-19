@@ -42,7 +42,6 @@ MIN_ABS_DIFFERENCE = 5
 
 class GamepadState(threading.Thread):
     """Simple joystick test class."""
-
     def __init__(self, node, queue, gamepad, abbrevs=EVENT_ABB):
         self.queue = queue
         self.gamepad = gamepad
@@ -134,7 +133,6 @@ class GamepadState(threading.Thread):
             return
 
         if abbv in self.abs_state:
-
             difference = self.abs_state[abbv] - self.old_abs_state[abbv]
             if (abs(difference)) > MIN_ABS_DIFFERENCE:
                 for node in self.nodes:
@@ -155,6 +153,8 @@ class GamepadState(threading.Thread):
                 events = []
                 print(e)
                 print("Gamepad not connected")
+                self.queue.put("Gamepad not connected")
+                break
             for event in events:
                 self.queue.put(event)
             #time.sleep(0.03333)
