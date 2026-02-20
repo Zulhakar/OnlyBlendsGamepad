@@ -6,9 +6,10 @@ import inputs
 from ..cnt.nodes.basic_nodes import ConstantNodeCnt
 from ..config import IS_DEBUG
 from ..util.gamepad_state import GamepadState
-from ..globals import gamepad_thread_dict, gamepad_event_queue_dict, register_functions_dict
+from ..globals import gamepad_thread_dict, gamepad_event_queue_dict, register_functions_dict, all_gamepads
 
 UPDATE_INTERVAL = 0.001
+
 
 def get_gamepad_device_path_enum_items(scene, context):
     import importlib
@@ -40,10 +41,11 @@ def gamepad_event_loop(interval, gamepad_state_obj, gamepad_event_queue, node):
         # performance boost
         if event.ev_type != "Sync" or event.ev_type != "Misc":
             events_dict[event.ev_type + "-" + event.code] = event
-    #performance boost, only process last state
+    # performance boost, only process last state
     for event in events_dict.values():
         gamepad_state_obj.process_event(event)
     return interval
+
 
 def get_all_gamepad_nodes(except_node=None):
     all_gamepad_nodes = []
@@ -54,6 +56,32 @@ def get_all_gamepad_nodes(except_node=None):
                     all_gamepad_nodes.append(node)
     return all_gamepad_nodes
 
+
+def plug_and_play_poll():
+    import importlib
+    importlib.reload(inputs)
+    from inputs import devices
+    current_gamepads = []
+    for i, gamepad in enumerate(devices.gamepads):
+        current_gamepads.append(gamepad._device_path)
+    current_gamepads = set(current_gamepads)
+    diff_gamepads = current_gamepads - all_gamepads
+    for gamepad in diff_gamepads:
+        if gamepad in current_gamepads:
+            print("new gamepad:", gamepad)
+            for node in get_all_gamepad_nodes():
+                if node.gamepad_device_path == gamepad:
+                    node.gamepads_update()
+    all_gamepads.clear()
+    all_gamepads.update(current_gamepads)
+    return 1.0
+
+#plug_and_play_poll_ref = functools.partial(plug_and_play_poll,
+
+def register_plug_and_play_poll():
+    if not bpy.app.timers.is_registered(plug_and_play_poll):
+        bpy.app.timers.register(plug_and_play_poll, first_interval=1.0)
+
 class GamepadStateNode(ConstantNodeCnt):
     '''Gamepad Node updates on change'''
     bl_label = "Gamepad"
@@ -63,6 +91,7 @@ class GamepadStateNode(ConstantNodeCnt):
         , update=lambda self, context: self.gamepads_update()
     )
     previous_gamepad: bpy.props.StringProperty()
+
     # gamepad_node_id: bpy.props.StringProperty(name="Node ID")
     def clean_up_on_gamepad_disconnect(self, device_path):
         if IS_DEBUG:
@@ -79,7 +108,7 @@ class GamepadStateNode(ConstantNodeCnt):
             del gamepad_event_queue_dict[device_path]
 
     def clean_up(self, device_path):
-        #alternative use GamepadState singleton to check if thread have to delete
+        # alternative use GamepadState singleton to check if thread have to delete
         all_other_nodes = get_all_gamepad_nodes(self)
         is_last_node = True
         for node in all_other_nodes:
@@ -122,8 +151,10 @@ class GamepadStateNode(ConstantNodeCnt):
             gamepad_event_queue_dict[self.gamepad_device_path] = queue.Queue()
         if self.gamepad_device_path not in gamepad_thread_dict:
             gamepad_thread_dict[self.gamepad_device_path] = GamepadState(self,
-                                                                 gamepad_event_queue_dict[self.gamepad_device_path],
-                                                                 get_gamepad_from_device_path(self.gamepad_device_path))
+                                                                         gamepad_event_queue_dict[
+                                                                             self.gamepad_device_path],
+                                                                         get_gamepad_from_device_path(
+                                                                             self.gamepad_device_path))
             gamepad_thread_dict[self.gamepad_device_path].daemon = True
             gamepad_thread_dict[self.gamepad_device_path].start()
         else:
@@ -132,12 +163,12 @@ class GamepadStateNode(ConstantNodeCnt):
                 gamepad_state.nodes.append(self)
         if self.gamepad_device_path not in register_functions_dict:
             register_functions_dict[self.gamepad_device_path] = functools.partial(gamepad_event_loop,
-                                                                          UPDATE_INTERVAL,
-                                                                          gamepad_thread_dict[self.gamepad_device_path],
-                                                                          gamepad_event_queue_dict[
-                                                                              self.gamepad_device_path], self)
+                                                                                  UPDATE_INTERVAL,
+                                                                                  gamepad_thread_dict[
+                                                                                      self.gamepad_device_path],
+                                                                                  gamepad_event_queue_dict[
+                                                                                      self.gamepad_device_path], self)
             bpy.app.timers.register(register_functions_dict[self.gamepad_device_path], first_interval=UPDATE_INTERVAL)
-
 
     def draw_buttons(self, context, layout):
         layout.prop(self, "gamepad_device_path", text="")
@@ -150,7 +181,7 @@ class GamepadStateNode(ConstantNodeCnt):
         self.outputs.new('NodeSocketStringCnt', "Axis Key")
         self.outputs.new('NodeSocketFloatCnt', "Axis Value")
         super().init(context)
-
+        register_plug_and_play_poll()
 
     def socket_update(self, socket):
         if socket.is_output:
@@ -165,3 +196,4 @@ class GamepadStateNode(ConstantNodeCnt):
         print(self.gamepad_device_path)
         if self.gamepad_device_path:
             self.gamepads_update()
+        register_plug_and_play_poll()

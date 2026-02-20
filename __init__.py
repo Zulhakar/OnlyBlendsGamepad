@@ -12,7 +12,7 @@ from .cnt.node_editor.menus import InputMenu, GroupMenu
 from .nodes import register as register_obg_nodes
 from .nodes import unregister as unregister_obg_nodes
 from .config import OB_TREE_TYPE
-
+from .nodes.gamepad_node import plug_and_play_poll
 
 @persistent
 def load_blend_file_job(file_name):
@@ -94,6 +94,7 @@ def unregister():
     bpy.utils.unregister_class(UtilMenu)
     bpy.app.handlers.load_post.remove(load_blend_file_job)
     unregister_util()
-
+    if bpy.app.timers.is_registered(plug_and_play_poll):
+        bpy.app.timers.unregister(plug_and_play_poll)
 if __name__ == "__main__":
     register()
