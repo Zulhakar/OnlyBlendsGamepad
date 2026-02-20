@@ -45,6 +45,7 @@ class GamepadState(threading.Thread):
     def __init__(self, node, queue, gamepad, abbrevs=EVENT_ABB):
         self.queue = queue
         self.gamepad = gamepad
+        self.device_path = gamepad._device_path
         self.btn_state = {}
         self.old_btn_state = {}
         self.abs_state = {}
@@ -153,7 +154,7 @@ class GamepadState(threading.Thread):
                 events = []
                 print(e)
                 print("Gamepad not connected")
-                self.queue.put("Gamepad not connected")
+                self.queue.put(self.device_path)
                 break
             for event in events:
                 self.queue.put(event)
