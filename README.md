@@ -36,6 +36,6 @@ Download as zip or install in Blender via:
 ## Change Log
 
 0.5.0
-- complete rewrite
+- Complete rewrite
 - pip package inputs is used instead of pygame, only one wheel for all platforms
 - OnlyBlends.Gamepad Node Editor and Custom Nodes
