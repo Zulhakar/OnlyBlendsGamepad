@@ -3,28 +3,31 @@
 
 # OnlyBlends.Gamepad 0.5.0
 Integrate Controller like Gamepads and other inputs via Nodes.
-![ezgif-201d03e4d39d7b](https://github.com/user-attachments/assets/d9cdfb9d-281c-43e8-83d0-e930197c72ed)
+![preview-gif-obg](https://github.com/user-attachments/assets/33b6383c-2c7a-4bdd-93ea-5fa8b39d3f3c)
 
 ## Features
 - Connection to Geometry Nodes via New OnlyBlend.Gamepad Node Editor
 - Supports multiple gamepads and multiple platforms (https://inputs.readthedocs.io/en/latest/user/hardwaresupport.html )
 - Node Socket segmented into: *D-Pad* ; *Axis* (Sticks and Bumpers) ; *Buttons*
-- The OnlyBlends.Gamepad Node Editor has Nodes to help with getting a Camera / object Controller
+- The OnlyBlends.Gamepad Node Editor has Nodes to help building a Camera / Object Controller
 
 ## Install
 Download as zip or install in Blender via:
 
 ## Usage
+- Select the OnlyBlends.Gamepad Node Editor
 
-In preference Tab toggle Gamepad listener and get state informations
-![Bildschirmfoto vom 2025-06-21 18-53-56](https://github.com/user-attachments/assets/bbb71991-52eb-4f1f-aa7b-b1d715a4566b)
+<img width="856" height="304" alt="Bildschirmfoto vom 2026-02-21 01-38-14" src="https://github.com/user-attachments/assets/a77a0f85-f9a1-4881-a84e-df1bd2be2cb4" />
 
-Generate Geometry Nodes for Axis, DPad and Buttons of your Gamepad and create your Example
-![Bildschirmfoto vom 2025-06-28 21-20-39](https://github.com/user-attachments/assets/25b49438-d899-4c4e-b314-86d07170979c)
+- Add a Gamepad Node
+- Create a Geometry Node Modifier and add Input Socket 
+- Use the Geometry Modifier Object Node to link the Gamepad inputs
 
-Or try out my special gamepad model example
-![Bildschirmfoto vom 2025-06-28 21-18-42](https://github.com/user-attachments/assets/59cd12ef-2377-4b8e-a3f6-065cbd6edfe2)
+<img width="1521" height="811" alt="Bildschirmfoto vom 2026-02-21 01-42-11" src="https://github.com/user-attachments/assets/13f36047-4eda-4fe1-97fe-e37f54a39d29" />
 
+- Use the Transform Object Node to build a Controller for Cameras and Objects
+
+<img width="1849" height="1013" alt="Bildschirmfoto vom 2026-02-21 01-24-55" src="https://github.com/user-attachments/assets/8366d3c6-863b-4e6b-a73f-73342eacca7b" />
 
 ## Upcoming features
 
