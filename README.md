@@ -6,10 +6,10 @@ Integrate Controller like Gamepads and other inputs via Nodes.
 ![ezgif-201d03e4d39d7b](https://github.com/user-attachments/assets/d9cdfb9d-281c-43e8-83d0-e930197c72ed)
 
 ## Features
-- Intended for use with geometry nodes
+- Connection to Geometry Nodes via New OnlyBlend.Gamepad Node Editor
 - Supports multiple gamepads and multiple platforms (https://inputs.readthedocs.io/en/latest/user/hardwaresupport.html )
 - Node Socket segmented into: *D-Pad* ; *Axis* (Sticks and Bumpers) ; *Buttons*
-- The OnlyBlends.Gamepad Node Editor has Nodes to help with getting a Camera Controller or Objects in general
+- The OnlyBlends.Gamepad Node Editor has Nodes to help with getting a Camera / object Controller
 
 ## Install
 Download as zip or install in Blender via:
@@ -29,3 +29,10 @@ Or try out my special gamepad model example
 ## Upcoming features
 
 - Mouse and Keyboard
+
+## Change Log
+
+0.5.0
+- complete rewrite
+- pip package inputs is used instead of pygame, only one wheel for all platforms
+- OnlyBlends.Gamepad Node Editor and Custom Nodes
