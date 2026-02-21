@@ -11,7 +11,7 @@ from .cnt.nodes import unregister as unregister_nodes
 from .cnt.node_editor.menus import InputMenu, GroupMenu
 from .nodes import register as register_obg_nodes
 from .nodes import unregister as unregister_obg_nodes
-from .config import OB_TREE_TYPE
+from .config import OB_TREE_TYPE, APP_NAME_SHORT
 from .nodes.gamepad_node import plug_and_play_poll
 
 @persistent
@@ -23,7 +23,7 @@ def load_blend_file_job(file_name):
 
 class RealtimeMenu(bpy.types.Menu):
     bl_label = 'Realtime'
-    bl_idname = 'RealtimeMenu'
+    bl_idname = f'NODE_MT_{APP_NAME_SHORT}_RealtimeMenu'
 
     def draw(self, context):
         layout = self.layout
@@ -36,7 +36,7 @@ class RealtimeMenu(bpy.types.Menu):
 
 class UtilMenu(bpy.types.Menu):
     bl_label = 'Util'
-    bl_idname = 'UtilMenu'
+    bl_idname = f'NODE_MT_{APP_NAME_SHORT}_UtilMenu'
 
     def draw(self, context):
         layout = self.layout
