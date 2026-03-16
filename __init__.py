@@ -13,6 +13,7 @@ from .nodes import register as register_obg_nodes
 from .nodes import unregister as unregister_obg_nodes
 from .config import OB_TREE_TYPE, APP_NAME_SHORT
 from .nodes.gamepad_node import plug_and_play_poll
+from .util.fullscreen_instance import BlenderSubprocessOperator, RenderSubprocessPanel
 
 @persistent
 def load_blend_file_job(file_name):
@@ -57,12 +58,16 @@ def draw_add_menu(self, context):
 
 
 def register():
+    bpy.utils.register_class(BlenderSubprocessOperator)
+    bpy.utils.register_class(RenderSubprocessPanel)
     register_basic_sockets()
     register_nodes()
     register_obg_nodes()
     register_node_editor()
     bpy.utils.register_class(RealtimeMenu)
     bpy.utils.register_class(UtilMenu)
+
+
     bpy.types.NODE_MT_add.append(draw_add_menu)
     bpy.app.handlers.load_post.append(load_blend_file_job)
 
@@ -92,6 +97,10 @@ def unregister():
     unregister_node_editor()
     bpy.utils.unregister_class(RealtimeMenu)
     bpy.utils.unregister_class(UtilMenu)
+
+    bpy.utils.unregister_class(BlenderSubprocessOperator)
+    bpy.utils.unregister_class(RenderSubprocessPanel)
+
     bpy.app.handlers.load_post.remove(load_blend_file_job)
     unregister_util()
     if bpy.app.timers.is_registered(plug_and_play_poll):
