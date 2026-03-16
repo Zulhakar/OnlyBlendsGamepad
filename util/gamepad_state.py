@@ -1,6 +1,6 @@
 from ..config import IS_DEBUG
 import threading
-
+import time
 EVENT_ABB = (
     # D-PAD, aka HAT
     ("Absolute-ABS_HAT0X", "HX"),
@@ -136,10 +136,11 @@ class GamepadState(threading.Thread):
 
     def run(self):
         """Process available events."""
+        #prevent windows from crashing, on "Start Game" ...there is of course a better solution, but i'm a linux dude
+        time.sleep(3.0)
         while self.let_it_run:
             try:
                 events = self.gamepad.read()
-
             except Exception as e:
                 events = []
                 print(e)
