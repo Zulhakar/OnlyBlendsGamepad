@@ -1,7 +1,3 @@
-import time
-
-from inputs import UnpluggedError
-from inputs import devices
 from ..config import IS_DEBUG
 import threading
 
@@ -41,7 +37,6 @@ MIN_ABS_DIFFERENCE = 5
 
 
 class GamepadState(threading.Thread):
-    """Simple joystick test class."""
     def __init__(self, node, queue, gamepad, abbrevs=EVENT_ABB):
         self.queue = queue
         self.gamepad = gamepad
@@ -66,7 +61,6 @@ class GamepadState(threading.Thread):
         threading.Thread.__init__(self)
 
     def handle_unknown_event(self, event, key):
-        """Deal with unknown events."""
         if event.ev_type == "Key":
             new_abbv = "B" + str(self._other)
             self.btn_state[new_abbv] = 0
@@ -84,7 +78,6 @@ class GamepadState(threading.Thread):
         return self.abbrevs[key]
 
     def process_event(self, event):
-        """Process the event into a state."""
         if event.ev_type == "Sync":
             return
         if event.ev_type == "Misc":
@@ -105,7 +98,6 @@ class GamepadState(threading.Thread):
         self.output_state(event.ev_type, abbv)
 
     def format_state(self):
-        """Format the state."""
         output_string = ""
         for key, value in self.abs_state.items():
             output_string += key + ":" + "{:>4}".format(str(value) + " ")
@@ -116,7 +108,6 @@ class GamepadState(threading.Thread):
         return output_string
 
     def output_state(self, ev_type, abbv):
-        """Print out the output state."""
         if ev_type == "Key":
             if self.btn_state[abbv] != self.old_btn_state[abbv]:
                 if IS_DEBUG:
@@ -148,9 +139,8 @@ class GamepadState(threading.Thread):
         while self.let_it_run:
             try:
                 events = self.gamepad.read()
-            except EOFError:
-                events = []
-            except OSError as e:
+
+            except Exception as e:
                 events = []
                 print(e)
                 print("Gamepad not connected")
@@ -158,6 +148,5 @@ class GamepadState(threading.Thread):
                 break
             for event in events:
                 self.queue.put(event)
-            #time.sleep(0.03333)
         if IS_DEBUG:
             print("finally finished")
