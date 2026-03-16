@@ -1,7 +1,7 @@
   <img width="128" src="https://github.com/user-attachments/assets/4e1f87c0-af56-4854-ae49-ee93bb8492c3">
  <img width="256" src="https://github.com/user-attachments/assets/5b2671a5-5c2f-4a70-a4b3-199e26cc670e">
 
-# OnlyBlends.Gamepad 0.5.0
+# OnlyBlends.Gamepad 0.5.0-1
 Integrate Controller like Gamepads and other inputs via Nodes.
 ![preview-gif-obg](https://github.com/user-attachments/assets/33b6383c-2c7a-4bdd-93ea-5fa8b39d3f3c)
 
@@ -10,7 +10,8 @@ Integrate Controller like Gamepads and other inputs via Nodes.
 - Supports multiple gamepads and multiple platforms (https://inputs.readthedocs.io/en/latest/user/hardwaresupport.html )
 - Node Socket segmented into: *D-Pad* ; *Axis* (Sticks and Bumpers) ; *Buttons*
 - The OnlyBlends.Gamepad Node Editor has Nodes to help building a Camera / Object Controller
-
+- "Start Game" Operator in the Render Properties
+    -> Spawn a Fullscreen Standalone Blender Instance
 ## Install
 Download as zip or install in Blender via:
 
@@ -39,3 +40,8 @@ Download as zip or install in Blender via:
 - Complete rewrite
 - pip package inputs is used instead of pygame, only one wheel for all platforms
 - OnlyBlends.Gamepad Node Editor and Custom Nodes
+
+0.5.0-1
+- Fix Plug and Play for Windows
+- "Start Game" Operator in the Render Properties
+    -> Spawn a Fullscreen Standalone Blender Instance like you in the old Times 
