@@ -1,4 +1,4 @@
-  <img width="128" src="https://github.com/user-attachments/assets/4e1f87c0-af56-4854-ae49-ee93bb8492c3">
+ <img width="128" src="https://github.com/user-attachments/assets/4e1f87c0-af56-4854-ae49-ee93bb8492c3">
  <img width="256" src="https://github.com/user-attachments/assets/5b2671a5-5c2f-4a70-a4b3-199e26cc670e">
 
 # OnlyBlends.Gamepad 0.5.0-1
@@ -33,6 +33,9 @@ Download as zip or install in Blender via:
 
 - You can start a Full Screen Instance of Blender
 
+<img width="1242" height="940" alt="Bildschirmfoto vom 2026-03-17 01-46-25" src="https://github.com/user-attachments/assets/8f8e308c-554a-4d0d-9dc1-1836eeb03a76" />
+
+<img width="1920" height="1080" alt="Bildschirmfoto vom 2026-03-17 01-48-01" src="https://github.com/user-attachments/assets/26814ef8-461f-4c62-92ce-a33497d7b9ad" />
 
 
 ### Optional
