@@ -10,14 +10,13 @@ def find_3d_view():
     return None
 
 
-def set_ui_visibility(override, visible):
+def set_ui_visibility(context, visible):
     screen = bpy.context.screen
     if hasattr(screen, "show_statusbar"):
         screen.show_statusbar = visible
     if hasattr(screen, "show_topbar"):
         screen.show_topbar = visible
     bpy.context.space_data.region_3d.view_perspective = 'CAMERA'
-    #bpy.ops.view3d.zoom_camera_1_to_1(override)
 
 
 class VIEW3D_OT_toggle_ui_fullscreen(bpy.types.Operator):
@@ -37,12 +36,12 @@ class VIEW3D_OT_toggle_ui_fullscreen(bpy.types.Operator):
             return {'CANCELLED'}
 
         # Switch context to 3D view
-        override = context.copy()
+        override =  bpy.context.copy()
         override["area"] = area
         override["region"] = area.regions[-1]
         with context.temp_override(**override):
             bpy.ops.screen.screen_full_area(use_hide_panels=True)
-            set_ui_visibility(override, False)
+            set_ui_visibility(context, False)
 
         wm[STATE_KEY] = True
 
@@ -83,6 +82,12 @@ def set_scene_settings():
             space.overlay.show_overlays = False
             space.show_gizmo = False
             area.spaces.active.shading.type = 'RENDERED'
+
+    #work around...don't know how to setup the context for zoom_camera
+    camera = bpy.context.scene.camera
+    camera.data.passepartout_alpha = 0.0
+    #bpy.ops.view3d.zoom_camera_1_to_1()
+
     bpy.context.scene.frame_set(0)
     bpy.ops.screen.animation_play()
     bpy.ops.view3d.hide_cursor('INVOKE_DEFAULT')
