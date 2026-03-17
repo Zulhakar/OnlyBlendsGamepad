@@ -13,7 +13,10 @@ UPDATE_INTERVAL = 0.001
 
 def get_gamepad_device_path_enum_items(scene, context):
     import importlib
-    importlib.reload(inputs)
+    try:
+        importlib.reload(inputs)
+    except Exception as e:
+        pass
     from inputs import devices
     items = [(None)]
     for i, device in enumerate(devices.gamepads):
