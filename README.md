@@ -16,6 +16,9 @@ Integrate Controller like Gamepads and other inputs via Nodes.
 Download as zip or install in Blender via:
 
 ## Usage
+
+### Geometry Node Connection
+
 - Select the OnlyBlends.Gamepad Node Editor
 
 <img width="856" height="304" alt="Bildschirmfoto vom 2026-02-21 01-38-14" src="https://github.com/user-attachments/assets/a77a0f85-f9a1-4881-a84e-df1bd2be2cb4" />
@@ -26,6 +29,13 @@ Download as zip or install in Blender via:
 
 <img width="1521" height="811" alt="Bildschirmfoto vom 2026-02-21 01-42-11" src="https://github.com/user-attachments/assets/13f36047-4eda-4fe1-97fe-e37f54a39d29" />
 
+### Fullscreen
+
+- You can start a Full Screen Instance of Blender
+
+
+
+### Optional
 - Use the Transform Object Node to build a Controller for Cameras and Objects
 
 <img width="1849" height="1013" alt="Bildschirmfoto vom 2026-02-21 01-24-55" src="https://github.com/user-attachments/assets/8366d3c6-863b-4e6b-a73f-73342eacca7b" />
@@ -44,4 +54,4 @@ Download as zip or install in Blender via:
 0.5.0-1
 - Fix Plug and Play for Windows
 - "Start Game" Operator in the Render Properties
-    -> Spawn a Fullscreen Standalone Blender Instance like you in the old Times 
+    -> Spawn a Fullscreen Standalone Blender Instance, like you know... 
