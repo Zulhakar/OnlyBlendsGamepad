@@ -32,7 +32,9 @@ Download as zip or install in Blender via:
 ### Fullscreen
 
 - You can start a Full Screen Instance of Blender
-
+- NOTE: This currently works only if you start blender with the blender executable (linux: blender, windows: blender.exe) not with the blender-launcher.
+- Not tested on Mac
+  
 <img width="1242" height="940" alt="Bildschirmfoto vom 2026-03-17 01-46-25" src="https://github.com/user-attachments/assets/8f8e308c-554a-4d0d-9dc1-1836eeb03a76" />
 
 <img width="1920" height="1080" alt="Bildschirmfoto vom 2026-03-17 01-48-01" src="https://github.com/user-attachments/assets/26814ef8-461f-4c62-92ce-a33497d7b9ad" />
@@ -58,3 +60,7 @@ Download as zip or install in Blender via:
 - Fix Plug and Play for Windows
 - "Start Game" Operator in the Render Properties
     -> Spawn a Fullscreen Standalone Blender Instance, like you know... 
+- Tested on:
+ - [x] Linux 
+ - [x] Windows
+ - [ ] Mac
