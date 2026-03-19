@@ -16,7 +16,7 @@ def get_gamepad_device_path_enum_items(scene, context):
     try:
         importlib.reload(inputs)
     except Exception as e:
-        pass
+        print(e)
     from inputs import devices
     items = [(None)]
     for i, device in enumerate(devices.gamepads):
@@ -26,7 +26,10 @@ def get_gamepad_device_path_enum_items(scene, context):
 
 def get_gamepad_from_device_path(device_path):
     import importlib
-    importlib.reload(inputs)
+    try:
+        importlib.reload(inputs)
+    except Exception as e:
+        print(e)
     from inputs import devices
     for i, device in enumerate(devices.all_devices):
         if device._device_path == device_path:
@@ -62,7 +65,10 @@ def get_all_gamepad_nodes(except_node=None):
 
 def plug_and_play_poll():
     import importlib
-    importlib.reload(inputs)
+    try:
+        importlib.reload(inputs)
+    except Exception as e:
+        print(e)
     from inputs import devices
     current_gamepads = []
     for i, gamepad in enumerate(devices.gamepads):

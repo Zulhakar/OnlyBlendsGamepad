@@ -1,6 +1,7 @@
 import bpy
 import subprocess
 import os, platform
+import tempfile
 from pathlib import Path
 
 def handle_userpref():
@@ -36,8 +37,9 @@ class BlenderSubprocessOperator(bpy.types.Operator):
             cmd = ''
         cmd += f'{bpy.app.binary_path} '
 
-        temp_dir = Path(bpy.app.tempdir)
-        temp_file =  os.path.join(temp_dir, "obs_temp_blend_file.blend")
+        #temp_dir = Path(bpy.app.tempdir)
+        tmp_dir = tempfile.gettempdir()
+        temp_file =  os.path.join(tmp_dir, "obs_temp_blend_file.blend")
         bpy.ops.wm.save_as_mainfile(filepath=str(temp_file), copy=True)
 
         cmd += f'{temp_file} '

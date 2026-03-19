@@ -1,10 +1,11 @@
 IS_DEBUG = False
 APP_NAME = "OnlyBlends.Gamepad"
-APP_NAME_SHORT = "obc"
+APP_NAME_SHORT = "obg"
 OB_TREE_TYPE = 'OnlyBlendsGamepadNodeTree'
 NEW_NODE_GROUP_NAME = "Gamepad Nodes"
 NODE_EDITOR_NAME = "OnlyBlends.Gamepad Node Editor"
 TREE_ICON = 'PLUGIN'
+VALID_TREES = [OB_TREE_TYPE, 'OnlyBlendsMixerNodeTree', 'OnlyBlendsCoreNodeTree']
 
 ########################################################################################################################
 # don't change this
