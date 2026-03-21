@@ -94,6 +94,7 @@ def register_plug_and_play_poll():
 class GamepadStateNode(ConstantNodeCnt):
     '''Gamepad Node updates on change'''
     bl_label = "Gamepad"
+    bl_icon = "PLUGIN"
     gamepad_device_path: bpy.props.EnumProperty(  # type: ignore
         name="Operation"
         , items=get_gamepad_device_path_enum_items

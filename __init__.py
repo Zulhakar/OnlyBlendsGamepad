@@ -1,11 +1,10 @@
 import bpy
-from bpy.app.handlers import persistent
 from bl_ui import node_add_menu
 
 from .cnt.node_editor import register as register_node_editor
 from .cnt.node_editor import unregister as unregister_node_editor
-from .cnt.sockets.basic_sockets import register as register_basic_sockets
-from .cnt.sockets.basic_sockets import unregister as unregister_basic_sockets
+from .cnt.sockets import register as register_basic_sockets
+from .cnt.sockets import unregister as unregister_basic_sockets
 from .cnt.nodes import register as register_nodes
 from .cnt.nodes import unregister as unregister_nodes
 from .cnt.node_editor.menus import InputMenu, GroupMenu, RealtimeMenu, UtilMenu
@@ -15,12 +14,6 @@ from .config import OB_TREE_TYPE, APP_NAME_SHORT
 from .nodes.gamepad_node import plug_and_play_poll
 from .util.fullscreen_instance import BlenderSubprocessOperator, RenderSubprocessPanel
 
-@persistent
-def load_blend_file_job(file_name):
-    for group in bpy.data.node_groups:
-        for node in group.nodes:
-            if hasattr(node, "refresh"):
-                node.refresh()
 
 class GamepadMenu(bpy.types.Menu):
     bl_label = 'OB Gamepad'
@@ -55,7 +48,6 @@ def register():
 
 
     bpy.types.NODE_MT_add.append(draw_add_menu)
-    bpy.app.handlers.load_post.append(load_blend_file_job)
 
 
 def unregister_util():
@@ -86,7 +78,6 @@ def unregister():
     bpy.utils.unregister_class(BlenderSubprocessOperator)
     bpy.utils.unregister_class(RenderSubprocessPanel)
 
-    bpy.app.handlers.load_post.remove(load_blend_file_job)
     unregister_util()
     if bpy.app.timers.is_registered(plug_and_play_poll):
         bpy.app.timers.unregister(plug_and_play_poll)
