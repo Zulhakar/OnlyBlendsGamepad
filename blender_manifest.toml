@@ -1,7 +1,7 @@
 schema_version = "1.0.0"
 
 id = "only_blends_gamepad"
-version = "0.5.1"
+version = "0.5.1-1"
 name = "OnlyBlends.Gamepad"
 tagline = "Integrate Controller like Gamepads and other inputs via Nodes"
 maintainer = "Zulhakar (ChangeGamer) <Ilineiros@proton.me>"
