@@ -77,5 +77,4 @@ Download as zip or install in Blender via:
 - Fix "Start Game" Operator of Fullscreen Mode (Windows)
 - Fix spamming of temporary save path
 - Fix Scene Info Node
-- It is possible to use also OnlyBlends.Mixer(if it's 0.5.1) Nodes if it's installed (Copy / Paste from on Tree to
-  another)
+- It is possible to use also OnlyBlends.Mixer Nodes if it's installed (after the 0.5.1 release of Mixer) with Copy / Paste from on Tree to another
