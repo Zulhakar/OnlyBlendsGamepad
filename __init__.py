@@ -21,8 +21,8 @@ class GamepadMenu(bpy.types.Menu):
 
     def draw(self, context):
         layout = self.layout
-        node_add_menu.add_node_type(layout, "GamepadStateNode")
-        node_add_menu.add_node_type(layout, "TransformObjectNodeCnt")
+        node_add_menu.AddNodeMenu.node_operator(layout, "GamepadStateNode")
+        node_add_menu.AddNodeMenu.node_operator(layout, "TransformObjectNodeCnt")
 
 
 
@@ -34,7 +34,7 @@ def draw_add_menu(self, context):
     layout.menu(GroupMenu.bl_idname)
     layout.menu(RealtimeMenu.bl_idname)
     layout.menu(UtilMenu.bl_idname)
-    node_add_menu.add_node_type(layout, "ModifierNode")
+    node_add_menu.AddNodeMenu.node_operator(layout, "ModifierNode")
     layout.menu(GamepadMenu.bl_idname)
 
 def register():
