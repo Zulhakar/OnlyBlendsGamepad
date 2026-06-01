@@ -1,5 +1,5 @@
 import bpy
-from ..cnt.nodes.basic_nodes import ConstantNodeCnt
+from ..obc_custom_nodes.nodes.basic_nodes import ConstantNodeCnt
 from ..config import CntSocketTypes
 import math
 from mathutils import Vector

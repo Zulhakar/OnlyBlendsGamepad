@@ -1,13 +1,13 @@
 import bpy
 from bl_ui import node_add_menu
 
-from .cnt.node_editor import register as register_node_editor
-from .cnt.node_editor import unregister as unregister_node_editor
-from .cnt.sockets import register as register_basic_sockets
-from .cnt.sockets import unregister as unregister_basic_sockets
-from .cnt.nodes import register as register_nodes
-from .cnt.nodes import unregister as unregister_nodes
-from .cnt.node_editor.menus import InputMenu, GroupMenu, RealtimeMenu, UtilMenu
+from .obc_custom_nodes.node_editor import register as register_node_editor
+from .obc_custom_nodes.node_editor import unregister as unregister_node_editor
+from .obc_custom_nodes.sockets import register as register_basic_sockets
+from .obc_custom_nodes.sockets import unregister as unregister_basic_sockets
+from .obc_custom_nodes.nodes import register as register_nodes
+from .obc_custom_nodes.nodes import unregister as unregister_nodes
+from .obc_custom_nodes.node_editor.menus import InputMenu, GroupMenu, RealtimeMenu, UtilMenu
 from .nodes import register as register_obg_nodes
 from .nodes import unregister as unregister_obg_nodes
 from .config import OB_TREE_TYPE, APP_NAME_SHORT
@@ -25,7 +25,6 @@ class GamepadMenu(bpy.types.Menu):
         node_add_menu.AddNodeMenu.node_operator(layout, "TransformObjectNodeCnt")
 
 
-
 def draw_add_menu(self, context):
     layout = self.layout
     if context.space_data.tree_type != OB_TREE_TYPE:
@@ -34,8 +33,9 @@ def draw_add_menu(self, context):
     layout.menu(GroupMenu.bl_idname)
     layout.menu(RealtimeMenu.bl_idname)
     layout.menu(UtilMenu.bl_idname)
-    node_add_menu.AddNodeMenu.node_operator(layout, "ModifierNode")
+    node_add_menu.AddNodeMenu.node_operator(layout, "ModifierControlNode")
     layout.menu(GamepadMenu.bl_idname)
+
 
 def register():
     bpy.utils.register_class(BlenderSubprocessOperator)
@@ -45,7 +45,6 @@ def register():
     register_obg_nodes()
     register_node_editor()
     bpy.utils.register_class(GamepadMenu)
-
 
     bpy.types.NODE_MT_add.append(draw_add_menu)
 
@@ -81,5 +80,7 @@ def unregister():
     unregister_util()
     if bpy.app.timers.is_registered(plug_and_play_poll):
         bpy.app.timers.unregister(plug_and_play_poll)
+
+
 if __name__ == "__main__":
     register()
