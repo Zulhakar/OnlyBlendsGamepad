@@ -1,16 +1,12 @@
 from ..config import IS_DEBUG
-import threading
-import time
+
 EVENT_ABB = (
-    # D-PAD, aka HAT
     ("Absolute-ABS_HAT0X", "HX"),
     ("Absolute-ABS_HAT0Y", "HY"),
-    # Face Buttons
     ("Key-BTN_NORTH", "N"),
     ("Key-BTN_EAST", "E"),
     ("Key-BTN_SOUTH", "S"),
     ("Key-BTN_WEST", "W"),
-    # Other buttons
     ("Key-BTN_THUMBL", "THL"),
     ("Key-BTN_THUMBR", "THR"),
     ("Key-BTN_TL", "TL"),
@@ -19,7 +15,6 @@ EVENT_ABB = (
     ("Key-BTN_TR2", "TR3"),
     ("Key-BTN_MODE", "M"),
     ("Key-BTN_START", "ST"),
-    # PiHUT SNES style controller buttons
     ("Key-BTN_TRIGGER", "N"),
     ("Key-BTN_THUMB", "E"),
     ("Key-BTN_THUMB2", "S"),
@@ -30,124 +25,96 @@ EVENT_ABB = (
     ("Key-BTN_PINKIE", "TR"),
 )
 
-
-# This is to reduce noise from the PlayStation controllers
-# For the Xbox controller, you can set this to 0
 MIN_ABS_DIFFERENCE = 5
 
+def init_state(abbrevs=EVENT_ABB):
+    abbrevs_dict = dict(abbrevs)
+    btn_state = {}
+    old_btn_state = {}
+    abs_state = {}
+    old_abs_state = {}
+    for key, value in abbrevs_dict.items():
+        if key.startswith("Absolute"):
+            abs_state[value] = 0
+            old_abs_state[value] = 0
+        if key.startswith("Key"):
+            btn_state[value] = 0
+            old_btn_state[value] = 0
+    return {
+        "abbrevs": abbrevs_dict,
+        "btn_state": btn_state,
+        "old_btn_state": old_btn_state,
+        "abs_state": abs_state,
+        "old_abs_state": old_abs_state,
+        "_other": 0,
+        "nodes": [],
+    }
 
-class GamepadState(threading.Thread):
-    def __init__(self, node, queue, gamepad, abbrevs=EVENT_ABB):
-        self.queue = queue
-        self.gamepad = gamepad
-        self.device_path = gamepad._device_path
-        self.btn_state = {}
-        self.old_btn_state = {}
-        self.abs_state = {}
-        self.old_abs_state = {}
-        self.abbrevs = dict(abbrevs)
-        for key, value in self.abbrevs.items():
-            if key.startswith("Absolute"):
-                self.abs_state[value] = 0
-                self.old_abs_state[value] = 0
-            if key.startswith("Key"):
-                self.btn_state[value] = 0
-                self.old_btn_state[value] = 0
-        self._other = 0
-        #self.gamepad = gamepad
-        self.let_it_run = True
-        self.nodes = []
-        self.nodes.append(node)
-        threading.Thread.__init__(self)
+def format_state(state):
+    out = ""
+    for k, v in state["abs_state"].items():
+        out += f"{k}:{v:>4} "
+    for k, v in state["btn_state"].items():
+        out += f"{k}:{v} "
+    return out
 
-    def handle_unknown_event(self, event, key):
-        if event.ev_type == "Key":
-            new_abbv = "B" + str(self._other)
-            self.btn_state[new_abbv] = 0
-            self.old_btn_state[new_abbv] = 0
-        elif event.ev_type == "Absolute":
-            new_abbv = "A" + str(self._other)
-            self.abs_state[new_abbv] = 0
-            self.old_abs_state[new_abbv] = 0
-        else:
-            return None
+def handle_unknown_event(state, ev_type, key):
+    if ev_type == "Key":
+        new_abbv = "B" + str(state["_other"])
+        state["btn_state"][new_abbv] = 0
+        state["old_btn_state"][new_abbv] = 0
+    elif ev_type == "Absolute":
+        new_abbv = "A" + str(state["_other"])
+        state["abs_state"][new_abbv] = 0
+        state["old_abs_state"][new_abbv] = 0
+    else:
+        return None
+    state["abbrevs"][key] = new_abbv
+    state["_other"] += 1
+    return new_abbv
 
-        self.abbrevs[key] = new_abbv
-        self._other += 1
-
-        return self.abbrevs[key]
-
-    def process_event(self, event):
-        if event.ev_type == "Sync":
-            return
-        if event.ev_type == "Misc":
-            return
-        key = event.ev_type + "-" + event.code
-        try:
-            abbv = self.abbrevs[key]
-        except KeyError:
-            abbv = self.handle_unknown_event(event, key)
-            if not abbv:
-                return
-        if event.ev_type == "Key":
-            self.old_btn_state[abbv] = self.btn_state[abbv]
-            self.btn_state[abbv] = event.state
-        if event.ev_type == "Absolute":
-            self.old_abs_state[abbv] = self.abs_state[abbv]
-            self.abs_state[abbv] = event.state
-        self.output_state(event.ev_type, abbv)
-
-    def format_state(self):
-        output_string = ""
-        for key, value in self.abs_state.items():
-            output_string += key + ":" + "{:>4}".format(str(value) + " ")
-
-        for key, value in self.btn_state.items():
-            output_string += key + ":" + str(value) + " "
-
-        return output_string
-
-    def output_state(self, ev_type, abbv):
-        if ev_type == "Key":
-            if self.btn_state[abbv] != self.old_btn_state[abbv]:
-                if IS_DEBUG:
-                    print(self.format_state())
-                for node in self.nodes:
-                    node.outputs[0].input_value = abbv
-                    node.outputs[1].input_value = self.btn_state[abbv]
-                return
-        if abbv[0] == "H":
+def output_state(state, ev_type, abbv, nodes):
+    if ev_type == "Key":
+        if state["btn_state"][abbv] != state["old_btn_state"][abbv]:
             if IS_DEBUG:
-                print(self.format_state())
-            for node in self.nodes:
-                node.outputs[2].input_value = abbv
-                node.outputs[3].input_value = self.abs_state[abbv]
+                print(format_state(state))
+            for node in nodes:
+                node.outputs[0].input_value = abbv
+                node.outputs[1].input_value = state["btn_state"][abbv]
             return
-
-        if abbv in self.abs_state:
-            difference = self.abs_state[abbv] - self.old_abs_state[abbv]
-            if (abs(difference)) > MIN_ABS_DIFFERENCE:
-                for node in self.nodes:
-                    node.outputs[4].input_value = abbv
-                    node.outputs[5].input_value = self.abs_state[abbv]
-                if IS_DEBUG:
-                    print(self.format_state())
-
-
-    def run(self):
-        """Process available events."""
-        #prevent windows from crashing, on "Start Game" ...there is of course a better solution, but i'm a linux dude
-        time.sleep(3.0)
-        while self.let_it_run:
-            try:
-                events = self.gamepad.read()
-            except Exception as e:
-                events = []
-                print(e)
-                print("Gamepad not connected")
-                self.queue.put(self.device_path)
-                break
-            for event in events:
-                self.queue.put(event)
+    if abbv and abbv[0] == "H":
         if IS_DEBUG:
-            print("finally finished")
+            print(format_state(state))
+        for node in nodes:
+            node.outputs[2].input_value = abbv
+            node.outputs[3].input_value = state["abs_state"][abbv]
+        return
+    if abbv in state["abs_state"]:
+        diff = state["abs_state"][abbv] - state["old_abs_state"][abbv]
+        if abs(diff) > MIN_ABS_DIFFERENCE:
+            for node in nodes:
+                node.outputs[4].input_value = abbv
+                node.outputs[5].input_value = state["abs_state"][abbv]
+            if IS_DEBUG:
+                print(format_state(state))
+
+def process_event(state, ev, nodes):
+    ev_type = ev["ev_type"]
+    code = ev["code"]
+    state_val = ev["state"]
+    if ev_type in ("Sync", "Misc"):
+        return
+    key = f"{ev_type}-{code}"
+    try:
+        abbv = state["abbrevs"][key]
+    except KeyError:
+        abbv = handle_unknown_event(state, ev_type, key)
+        if not abbv:
+            return
+    if ev_type == "Key":
+        state["old_btn_state"][abbv] = state["btn_state"][abbv]
+        state["btn_state"][abbv] = state_val
+    if ev_type == "Absolute":
+        state["old_abs_state"][abbv] = state["abs_state"][abbv]
+        state["abs_state"][abbv] = state_val
+    output_state(state, ev_type, abbv, nodes)

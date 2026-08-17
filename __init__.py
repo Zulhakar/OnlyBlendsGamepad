@@ -50,20 +50,25 @@ def register():
 
 
 def unregister_util():
-    from .globals import gamepad_thread_dict, gamepad_event_queue_dict, register_functions_dict
-    import copy
-    keys = list(register_functions_dict.keys())
-    for key in keys:
+    from .globals import gamepad_process_dict, gamepad_state_dict, register_functions_dict
+    for key in list(register_functions_dict.keys()):
         if bpy.app.timers.is_registered(register_functions_dict[key]):
             bpy.app.timers.unregister(register_functions_dict[key])
         del register_functions_dict[key]
-    keys = list(gamepad_event_queue_dict.keys())
-    for key in keys:
-        del gamepad_event_queue_dict[key]
-    keys = list(gamepad_thread_dict.keys())
-    for key in keys:
-        gamepad_thread_dict[key].let_it_run = False
-        del gamepad_thread_dict[key]
+
+    for key in list(gamepad_process_dict.keys()):
+        proc = gamepad_process_dict[key]
+        try:
+            proc.terminate()
+            proc.wait(timeout=1)
+        except Exception:
+            try:
+                proc.kill()
+            except Exception:
+                pass
+        del gamepad_process_dict[key]
+
+    gamepad_state_dict.clear()
 
 
 def unregister():
