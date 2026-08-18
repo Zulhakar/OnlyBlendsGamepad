@@ -30,8 +30,9 @@ Download as zip or install in Blender via:
 - Create a Geometry Node Modifier and add Input Sockets
 - The 'Modifier Control' Node can manipulate the Inputs of an Geometry Nodes Modifier and has an Object as Output Socket (the Geometry of the Modifier)
 - This means you can send Data from Gamepad Nodes to Geometry Nodes in Realtime
-- 
-![image_2](https://github.com/user-attachments/assets/13f36047-4eda-4fe1-97fe-e37f54a39d29)
+
+![gif_2.gif](https://github.com/user-attachments/assets/1a1ac20c-9817-403d-bce3-e04193eb5c14)
+
 
 ### Fullscreen
 
@@ -46,7 +47,7 @@ Download as zip or install in Blender via:
 
 - Use the Transform Object Node to build a Controller for Cameras and Objects
 
-![image_4](https://github.com/user-attachments/assets/8366d3c6-863b-4e6b-a73f-73342eacca7b)
+![gif_1](https://github.com/user-attachments/assets/9b99e55b-dc10-4d6f-b43e-d40a64b0eb32)
 
 ## Special Thanks to
 
