@@ -88,4 +88,4 @@ Download as zip or install in Blender via:
 - internal fixes to get listed on extensions platform again
   - [x] critical packages queue and threading no longer used
   - [x] changes from (https://github.com/Zulhakar/OnlyBlendsCore)
-        - "Geometry Modifier Object" renamed to "Modifier Control"
+  - [x] "Geometry Modifier Object" renamed to "Modifier Control"
