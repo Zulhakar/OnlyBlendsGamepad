@@ -27,9 +27,10 @@ Download as zip or install in Blender via:
 
 ![image_1](https://github.com/user-attachments/assets/a77a0f85-f9a1-4881-a84e-df1bd2be2cb4)
 - Add a Gamepad Node
-- Create a Geometry Node Modifier and add Input Socket
-- Use the Geometry Modifier Object Node to link the Gamepad inputs
-
+- Create a Geometry Node Modifier and add Input Sockets
+- The 'Modifier Control' Node can manipulate the Inputs of an Geometry Nodes Modifier and has an Object as Output Socket (the Geometry of the Modifier)
+- This means you can send Data from Gamepad Nodes to Geometry Nodes in Realtime
+- 
 ![image_2](https://github.com/user-attachments/assets/13f36047-4eda-4fe1-97fe-e37f54a39d29)
 
 ### Fullscreen
@@ -46,6 +47,12 @@ Download as zip or install in Blender via:
 - Use the Transform Object Node to build a Controller for Cameras and Objects
 
 ![image_4](https://github.com/user-attachments/assets/8366d3c6-863b-4e6b-a73f-73342eacca7b)
+
+## Special Thanks to
+
+- Zeth
+- https://github.com/zeth
+- https://github.com/zeth/inputs
 
 ## Upcoming features
 
@@ -79,4 +86,6 @@ Download as zip or install in Blender via:
 0.5.2
 
 - internal fixes to get listed on extensions platform again
-  - [x] critical packages queue and threading no longer used 
+  - [x] critical packages queue and threading no longer used
+  - [x] changes from (https://github.com/Zulhakar/OnlyBlendsCore)
+        - "Geometry Modifier Object" renamed to "Modifier Control"
